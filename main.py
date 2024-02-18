@@ -1,6 +1,8 @@
 import os
 import click
 import psycopg2
+import dateparser
+import time
 from easyocr import Reader
 from tqdm import tqdm
 from dotenv import load_dotenv
@@ -68,17 +70,33 @@ def cli():
     pass
 
 @click.command(name='load_and_index')
+@click.option('--since', default=None, help='Only process files created after this date. Accepts human readable dates like "1y" for one year, as well as exact dates.')
 @click.argument('directory')
-def load_and_index_image_dir(directory):
+def load_and_index_image_dir(directory, since):
     # List of common image extensions
     valid_extensions = ('.png', '.jpg', '.jpeg', '.tiff', '.bmp', '.gif')
+
+    # if since arg added, parse the date into timestamp
+    since_time = None
+    if since:
+        try:
+            since_time = time.mktime(dateparser.parse(since).timetuple())
+        except Exception as e:
+            click.echo(f'Failed to parse date: {str(e)}')
+            return
 
     # get all files
     files = []
     for foldername, _ , filenames in os.walk(directory):
         for filename in filenames:
             if filename.lower().endswith(valid_extensions):
-                files.append(os.path.join(foldername, filename))
+                file_path = os.path.join(foldername, filename)
+                # get file creation time
+                file_time = os.path.getmtime(file_path)
+                # if a since date is specified, only append files that were created after that date
+                if since_time is not None and file_time < since_time:
+                    continue
+                files.append(file_path)
 
     # initialise progress
     with tqdm(total=len(files), dynamic_ncols=True) as progress:

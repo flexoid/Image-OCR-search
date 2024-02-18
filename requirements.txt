@@ -3,3 +3,4 @@ easyocr==1.7.1
 tqdm==4.66.2
 click==8.1.7
 python-dotenv==1.0.1
+dateparser==1.2.0
