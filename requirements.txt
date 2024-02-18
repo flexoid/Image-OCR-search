@@ -1,0 +1,5 @@
+psycopg2-binary==2.9.9
+easyocr==1.7.1
+tqdm==4.66.2
+click==8.1.7
+python-dotenv==1.0.1
