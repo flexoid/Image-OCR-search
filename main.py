@@ -15,6 +15,7 @@ USER = os.getenv("USER")
 PASSWORD = os.getenv("PASSWORD")
 HOST = os.getenv("HOST")
 PORT = os.getenv("PORT")
+LANGUAGES = os.getenv("LANGUAGES").split(',')
 
 def setup_database():
     try:
@@ -53,7 +54,7 @@ def setup_database():
 
 def perform_ocr(file):
     try:
-        reader = Reader(['en', 'pl'])
+        reader = Reader(LANGUAGES)
         result = reader.readtext(file)
         text = ' '.join([item[1] for item in result])
         return text

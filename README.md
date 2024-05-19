@@ -22,24 +22,20 @@ Personally, I find it very useful for searching all my screenshots stored in the
 6. Install the required dependencies:  
    `pip3 install -r requirements.txt`
 
-7. Create a `.env` file and update the PostgreSQL database authentication details:
+7. Create a `.env` file using the provided example and update the parameters, such as the database connection details and OCR languages:
 
    ```
-   DB_NAME=your_database_name
-   USER=your_username
-   PASSWORD=your_password
-   HOST=your_host
-   PORT=your_port
+   cp .env.example .env
    ```
 
 ## Basic Usage
 
 - To index or scan a directory recursively, use:  
-   `python main.py load_and_index directory_path --since "interval"`  
+   `python3 main.py load_and_index directory_path --since "interval"`  
    The `--since` parameter is optional. It selects files modified within a certain interval in a human-readable format, like "2 months ago", "3 weeks", "1 year", etc.
 
 - To perform a full-text search over the available scan results, use:  
-   `python main.py search your_query`  
+   `python3 main.py search your_query`  
    It outputs the list of files that contain the requested text.
 
 ## License
