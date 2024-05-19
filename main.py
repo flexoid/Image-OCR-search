@@ -18,12 +18,23 @@ PORT = os.getenv("PORT")
 
 def setup_database():
     try:
+        # create database DB_NAME if it does not exist
+        conn = psycopg2.connect(database='postgres', user=USER, password=PASSWORD, host=HOST, port=PORT)
+        conn.autocommit = True
+        cur = conn.cursor()
+        cur.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s", (DB_NAME,))
+        exists = cur.fetchone()
+        if not exists:
+            cur.execute(f"CREATE DATABASE {DB_NAME}")
+            print(f"Database {DB_NAME} created.")
+        cur.close()
+        conn.close()
+
         # connect to the PostgreSQL server
-        print('Connecting to the PostgreSQL database...')
         conn = psycopg2.connect(database=DB_NAME, user=USER, password=PASSWORD, host=HOST, port=PORT)
         cur = conn.cursor()
 
-        # create table one by one
+        # create table
         cur.execute("""
             CREATE TABLE IF NOT EXISTS images(
                 path TEXT NOT NULL PRIMARY KEY,
